@@ -1,0 +1,42 @@
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Local PDF inputs (may contain copyrighted material)
+data/*.pdf
+
+# Generated extraction results
+output/*
+!output/.gitkeep
+
+# Python packaging artifacts
+build/
+dist/
+*.egg-info/
