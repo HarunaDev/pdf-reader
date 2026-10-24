@@ -1,13 +1,24 @@
+
 import re
 from pathlib import Path
 from dataclasses import replace
 
-from src.models import QuestionRecord, SourceMetadata, DocumentMetadata
+from src.models import (
+    DocumentMetadata,
+    QuestionRecord,
+    SourceDocumentReference,
+)
 
 
 PAGE_PATTERN = re.compile(r"^--- Page (\d+) ---\s*$")
-MAJOR_QUESTION_PATTERN = re.compile(r"^Question (\d+)\s*$", re.IGNORECASE)
-LETTER_PART_PATTERN = re.compile(r"^\(([a-z])\)\s*(.*)$")
+MAJOR_QUESTION_PATTERN = re.compile(
+    r"^Question\s+(\d+)\s*$",
+    re.IGNORECASE,
+)
+LETTER_PART_PATTERN = re.compile(
+    r"^\(([a-z])\)\s*(.*)$",
+    re.IGNORECASE,
+)
 ROMAN_PART_PATTERN = re.compile(
     r"^\((i{1,3}|iv|v|vi{0,3}|ix|x)\)\s*(.*)$",
     re.IGNORECASE,
@@ -27,13 +38,13 @@ def _split_pages(text: str) -> list[tuple[int, list[str]]]:
     page_lines: list[str] = []
 
     for line in text.splitlines():
-        page_match = PAGE_PATTERN.match(line.strip())
+        match = PAGE_PATTERN.match(line.strip())
 
-        if page_match:
+        if match:
             if page_number is not None:
                 pages.append((page_number, page_lines))
 
-            page_number = int(page_match.group(1))
+            page_number = int(match.group(1))
             page_lines = []
         elif page_number is not None:
             page_lines.append(line)
@@ -45,101 +56,98 @@ def _split_pages(text: str) -> list[tuple[int, list[str]]]:
 
 
 def _clean_text(lines: list[str]) -> str:
-    """Clean layout artifacts without changing the wording of a question."""
-    cleaned_lines: list[str] = []
+    """Clean layout artifacts without changing question wording."""
+    cleaned: list[str] = []
 
     for line in lines:
-        value = line.strip()
-        value = re.sub(r"\.{3,}", "", value)
-        value = re.sub(r"\s+", " ", value)
+        value = re.sub(r"\.{3,}", "", line.strip())
+        value = re.sub(r"\s+", " ", value).strip()
 
         if not value:
             continue
 
-        if value.startswith("© UCLES") or value.startswith("© Cambridge"):
+        if value.startswith(("© UCLES", "© Cambridge")):
             continue
 
         if value in {"[Turn over]", "PUBLISHED"}:
             continue
 
-        cleaned_lines.append(value)
+        cleaned.append(value)
 
-    return " ".join(cleaned_lines).strip()
+    return " ".join(cleaned).strip()
+
 
 def _subject_slug(subject: str) -> str:
     """Convert a subject name into a lowercase, hyphenated identifier."""
-    return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", subject.lower())).strip("-")
+    slug = re.sub(r"[^a-z0-9]+", "-", subject.lower()).strip("-")
+    return re.sub(r"-+", "-", slug)
 
-# def _make_record(
-#     document_name: str,
-#     page_number: int,
-#     question_number: str,
-#     question_text: str,
-#     marks: int | None,
-# ) -> QuestionRecord:
-#     question_id = f"{document_name}:{question_number}"
 
-#     source = SourceMetadata(
-#         document_name=document_name,
-#         page_number=page_number,
-#         question_id=question_id,
-#     )
+def _document_id(document_name: str) -> str:
+    """Create a document ID from a source filename."""
+    stem = Path(document_name).stem
+    return _subject_slug(stem) or "source-document"
 
-#     return QuestionRecord(
-#         question_id=question_id,
-#         question_number=question_number,
-#         question_text=question_text,
-#         marks=marks,
-#         source=source,
-#     )
 
 def _make_record(
     document: DocumentMetadata,
+    document_id: str,
     page_number: int,
     question_number: str,
     question_text: str,
     marks: int | None,
+    instructions: list[str] | None = None,
 ) -> QuestionRecord:
+    """Create a question record with its source reference."""
     subject_slug = _subject_slug(
-        document.subject or document.document_name.rsplit(".", 1)[0]
+        document.subject or Path(document.document_name).stem
     )
     question_id = f"{subject_slug}:{question_number}"
-
-    source = SourceMetadata(
-        document_name=document.document_name,
-        page_number=page_number,
-        question_id=question_id,
-    )
 
     return QuestionRecord(
         question_id=question_id,
         question_number=question_number,
         question_text=question_text,
-        document=document,
-        source=source,
+        source=SourceDocumentReference(
+            document_id=document_id,
+            page_number=page_number,
+        ),
         marks=marks,
+        instructions=instructions or [],
     )
+
 
 def parse_question_paper_text(
     text: str,
     document: DocumentMetadata,
+    source_document_id: str | None = None,
 ) -> list[QuestionRecord]:
-    """Extract numbered questions and nested subquestions."""
+    """Extract questions while keeping shared instructions separate."""
     records: list[QuestionRecord] = []
+    document_id = source_document_id or _document_id(
+        document.document_name
+    )
+
     current_major: str | None = None
     parent_part: str | None = None
+    parent_instruction = ""
 
     for page_number, lines in _split_pages(text):
         current_number: str | None = None
         current_lines: list[str] = []
         current_marks: int | None = None
+        current_instructions: list[str] = []
 
         page_has_subquestions = False
         major_prompt_lines: list[str] = []
         major_prompt_start: int | None = None
 
         def flush_current() -> None:
-            nonlocal current_number, current_lines, current_marks
+            """Save the current question, if one has been started."""
+            nonlocal current_number
+            nonlocal current_lines
+            nonlocal current_marks
+            nonlocal current_instructions
 
             if current_number is not None:
                 question_text = _clean_text(current_lines)
@@ -148,93 +156,106 @@ def parse_question_paper_text(
                     records.append(
                         _make_record(
                             document=document,
+                            document_id=document_id,
                             page_number=page_number,
                             question_number=current_number,
                             question_text=question_text,
                             marks=current_marks,
+                            instructions=current_instructions,
                         )
                     )
 
             current_number = None
             current_lines = []
             current_marks = None
+            current_instructions = []
 
         for line_index, line in enumerate(lines):
             stripped = line.strip()
 
+            # Start of a new major question, e.g. Question 1.
             major_match = MAJOR_QUESTION_PATTERN.match(stripped)
 
             if major_match:
                 flush_current()
+
                 current_major = major_match.group(1)
                 parent_part = None
+                parent_instruction = ""
+
                 major_prompt_lines = []
                 major_prompt_start = line_index + 1
                 page_has_subquestions = False
                 continue
 
+            # Roman-numeral subquestions must be checked before letter parts.
             roman_match = ROMAN_PART_PATTERN.match(stripped)
-            letter_match = LETTER_PART_PATTERN.match(stripped)
 
-            # Check for a nested Roman-numeral part BEFORE
-            # interpreting the line as a lettered part.
             if (
                 roman_match
                 and current_major is not None
                 and parent_part is not None
             ):
                 parent_number = f"{current_major}({parent_part})"
-                parent_prompt = ""
 
-                # The current record may be the parent instruction,
-                # rather than a question in its own right.
-                if (
-                    current_number == parent_number
-                    and current_marks is None
-                ):
-                    parent_prompt = _clean_text(current_lines)
-
-                    # Save the parent instruction as context instead
-                    # of emitting a separate parent question record.
+                if current_number == parent_number:
+                    # The parent part contains a shared instruction, not
+                    # a separate answerable question when children follow.
                     current_number = None
                     current_lines = []
                     current_marks = None
+                    current_instructions = []
                 else:
+                    # Save the preceding Roman-numeral subquestion.
                     flush_current()
 
                 page_has_subquestions = True
+
                 roman_part = roman_match.group(1).lower()
                 current_number = (
                     f"{current_major}({parent_part})({roman_part})"
                 )
 
-                current_lines = []
+                child_text = roman_match.group(2).strip()
 
-                if parent_prompt:
-                    current_lines.append(parent_prompt)
+                # Keep only the child's own wording in question_text.
+                current_lines = [child_text] if child_text else []
 
-                if roman_match.group(2).strip():
-                    current_lines.append(roman_match.group(2).strip())
+                # Every child inherits the parent instruction as metadata.
+                current_instructions = (
+                    [parent_instruction] if parent_instruction else []
+                )
 
                 major_prompt_lines = []
                 major_prompt_start = None
                 continue
+
+            # Start of a lettered part, e.g. (a) or (b).
+            letter_match = LETTER_PART_PATTERN.match(stripped)
 
             if letter_match and current_major is not None:
                 flush_current()
-
                 page_has_subquestions = True
-                parent_part = letter_match.group(1).lower()
-                current_number = f"{current_major}({parent_part})"
-                current_lines = []
 
-                if letter_match.group(2).strip():
-                    current_lines.append(letter_match.group(2).strip())
+                parent_part = letter_match.group(1).lower()
+                parent_instruction = letter_match.group(2).strip()
+
+                current_number = f"{current_major}({parent_part})"
+
+                # Initially collect the parent instruction. If Roman
+                # children follow, discard this parent-only record.
+                current_lines = (
+                    [parent_instruction] if parent_instruction else []
+                )
+                current_instructions = (
+                    [parent_instruction] if parent_instruction else []
+                )
 
                 major_prompt_lines = []
                 major_prompt_start = None
                 continue
 
+            # Continue collecting text for the active question.
             if current_number is not None:
                 mark_matches = MARKS_PATTERN.findall(stripped)
 
@@ -245,6 +266,7 @@ def parse_question_paper_text(
                 if stripped and not stripped.startswith("©"):
                     current_lines.append(stripped)
 
+            # Collect text for major questions without lettered parts.
             elif (
                 major_prompt_start is not None
                 and line_index >= major_prompt_start
@@ -253,7 +275,7 @@ def parse_question_paper_text(
 
         flush_current()
 
-        # Preserve extended-response questions without lettered parts.
+        # Handle a major question with no lettered subquestions.
         if (
             current_major is not None
             and not page_has_subquestions
@@ -268,13 +290,12 @@ def parse_question_paper_text(
                     prompt_text,
                     re.IGNORECASE,
                 )
-                total_marks = sum(
-                    int(value) for value in mark_values
-                ) or None
+                total_marks = sum(map(int, mark_values)) or None
 
                 records.append(
                     _make_record(
                         document=document,
+                        document_id=document_id,
                         page_number=page_number,
                         question_number=current_major,
                         question_text=prompt_text,
@@ -288,8 +309,9 @@ def parse_question_paper_text(
 def parse_mark_scheme_text(
     text: str,
 ) -> dict[str, dict[str, object]]:
-    """Extract point-based mark-scheme entries keyed by question number."""
+    """Extract mark-scheme entries keyed by question number."""
     entries: dict[str, dict[str, object]] = {}
+
     current_number: str | None = None
     current_page = 1
     current_lines: list[str] = []
@@ -301,11 +323,9 @@ def parse_mark_scheme_text(
 
         accepted_answers: list[str] = []
         guidance_lines: list[str] = []
-        marks: int | None = None
 
         header_mark = re.search(r"\s+(\d+)\s*$", current_header)
-        if header_mark:
-            marks = int(header_mark.group(1))
+        marks = int(header_mark.group(1)) if header_mark else None
 
         for line in current_lines:
             bullet_match = BULLET_PATTERN.match(line)
@@ -331,6 +351,7 @@ def parse_mark_scheme_text(
 
             if item_match:
                 flush_entry()
+
                 current_number = item_match.group(1).lower()
                 current_header = item_match.group(2)
                 current_lines = []
@@ -341,13 +362,17 @@ def parse_mark_scheme_text(
     return entries
 
 
-
 def attach_mark_scheme(
     records: list[QuestionRecord],
     mark_scheme: dict[str, dict[str, object]],
     mark_scheme_document: DocumentMetadata,
+    mark_scheme_document_id: str | None = None,
 ) -> list[QuestionRecord]:
-    """Attach matching mark-scheme content to extracted questions."""
+    """Attach matching answers and marking guidance to each question."""
+    document_id = (
+        mark_scheme_document_id
+        or _document_id(mark_scheme_document.document_name)
+    )
     enriched_records: list[QuestionRecord] = []
 
     for record in records:
@@ -366,15 +391,36 @@ def attach_mark_scheme(
             )
             continue
 
-        mark_scheme_source = SourceMetadata(
-            document_name=mark_scheme_document.document_name,
-            page_number=int(entry["page"]),
-            question_id=record.question_id,
+        page_value = entry.get("page")
+        answers_value = entry.get("accepted_answers", [])
+        guidance_value = entry.get("marking_guidance", [])
+        marks_value = entry.get("marks")
+
+        mark_scheme_source = (
+            SourceDocumentReference(
+                document_id=document_id,
+                page_number=int(page_value),
+            )
+            if page_value is not None
+            else None
         )
 
-        accepted_answers = list(entry["accepted_answers"])
-        marking_guidance = list(entry["marking_guidance"])
-        entry_marks = entry["marks"]
+        accepted_answers = (
+            [str(value) for value in answers_value]
+            if isinstance(answers_value, list)
+            else []
+        )
+        marking_guidance = (
+            [str(value) for value in guidance_value]
+            if isinstance(guidance_value, list)
+            else []
+        )
+
+        scheme_marks = (
+            float(marks_value)
+            if isinstance(marks_value, (int, float))
+            else None
+        )
 
         enriched_records.append(
             replace(
@@ -382,7 +428,7 @@ def attach_mark_scheme(
                 marks=(
                     record.marks
                     if record.marks is not None
-                    else entry_marks
+                    else scheme_marks
                 ),
                 accepted_answers=accepted_answers,
                 marking_guidance=marking_guidance,
