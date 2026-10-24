@@ -91,11 +91,128 @@ def _make_record(
     )
 
 
+# def parse_question_paper_text(
+#     text: str,
+#     document_name: str,
+# ) -> list[QuestionRecord]:
+#     """Extract numbered questions and subquestions from question-paper text."""
+#     records: list[QuestionRecord] = []
+#     current_major: str | None = None
+#     parent_part: str | None = None
+
+#     for page_number, lines in _split_pages(text):
+#         current_number: str | None = None
+#         current_lines: list[str] = []
+#         current_marks: int | None = None
+#         page_has_subquestions = False
+#         major_prompt_lines: list[str] = []
+#         major_prompt_start: int | None = None
+
+#         def flush_current() -> None:
+#             nonlocal current_number, current_lines, current_marks
+
+#             if current_number is not None:
+#                 question_text = _clean_text(current_lines)
+
+#                 if question_text:
+#                     records.append(
+#                         _make_record(
+#                             document_name=document_name,
+#                             page_number=page_number,
+#                             question_number=current_number,
+#                             question_text=question_text,
+#                             marks=current_marks,
+#                         )
+#                     )
+
+#             current_number = None
+#             current_lines = []
+#             current_marks = None
+
+#         for line_index, line in enumerate(lines):
+#             stripped = line.strip()
+
+#             major_match = MAJOR_QUESTION_PATTERN.match(stripped)
+#             if major_match:
+#                 flush_current()
+#                 current_major = major_match.group(1)
+#                 parent_part = None
+#                 major_prompt_lines = []
+#                 major_prompt_start = line_index + 1
+#                 page_has_subquestions = False
+#                 continue
+
+#             letter_match = LETTER_PART_PATTERN.match(stripped)
+#             roman_match = ROMAN_PART_PATTERN.match(stripped)
+
+#             if letter_match and current_major is not None:
+#                 flush_current()
+#                 page_has_subquestions = True
+#                 parent_part = letter_match.group(1)
+#                 current_number = f"{current_major}({parent_part})"
+#                 current_lines = [letter_match.group(2)]
+#                 major_prompt_lines = []
+#                 major_prompt_start = None
+#                 continue
+
+#             if roman_match and current_major is not None and parent_part:
+#                 flush_current()
+#                 page_has_subquestions = True
+#                 roman_part = roman_match.group(1).lower()
+#                 current_number = f"{current_major}({parent_part})({roman_part})"
+#                 current_lines = [roman_match.group(2)]
+#                 continue
+
+#             if current_number is not None:
+#                 mark_matches = MARKS_PATTERN.findall(stripped)
+
+#                 if mark_matches:
+#                     current_marks = int(mark_matches[-1])
+#                     stripped = MARKS_PATTERN.sub("", stripped).strip()
+
+#                 if stripped and not stripped.startswith("©"):
+#                     current_lines.append(stripped)
+
+#             elif major_prompt_start is not None and line_index >= major_prompt_start:
+#                 major_prompt_lines.append(line)
+
+#         flush_current()
+
+#         # Some tasks, such as Question 3, have a single extended-response
+#         # prompt rather than lettered subquestions.
+#         if (
+#             current_major is not None
+#             and not page_has_subquestions
+#             and major_prompt_start is not None
+#             and major_prompt_lines
+#         ):
+#             prompt_text = _clean_text(major_prompt_lines)
+#             if prompt_text:
+#                 mark_values = re.findall(
+#                     r"Up to (\d+) marks? are available",
+#                     prompt_text,
+#                     re.IGNORECASE,
+#                 )
+#                 total_marks = sum(int(value) for value in mark_values) or None
+
+#                 records.append(
+#                     _make_record(
+#                         document_name=document_name,
+#                         page_number=page_number,
+#                         question_number=current_major,
+#                         question_text=prompt_text,
+#                         marks=total_marks,
+#                     )
+#                 )
+
+#     return records
+
+
 def parse_question_paper_text(
     text: str,
     document_name: str,
 ) -> list[QuestionRecord]:
-    """Extract numbered questions and subquestions from question-paper text."""
+    """Extract numbered questions and nested subquestions."""
     records: list[QuestionRecord] = []
     current_major: str | None = None
     parent_part: str | None = None
@@ -104,6 +221,7 @@ def parse_question_paper_text(
         current_number: str | None = None
         current_lines: list[str] = []
         current_marks: int | None = None
+
         page_has_subquestions = False
         major_prompt_lines: list[str] = []
         major_prompt_start: int | None = None
@@ -133,6 +251,7 @@ def parse_question_paper_text(
             stripped = line.strip()
 
             major_match = MAJOR_QUESTION_PATTERN.match(stripped)
+
             if major_match:
                 flush_current()
                 current_major = major_match.group(1)
@@ -142,25 +261,66 @@ def parse_question_paper_text(
                 page_has_subquestions = False
                 continue
 
-            letter_match = LETTER_PART_PATTERN.match(stripped)
             roman_match = ROMAN_PART_PATTERN.match(stripped)
+            letter_match = LETTER_PART_PATTERN.match(stripped)
 
-            if letter_match and current_major is not None:
-                flush_current()
+            # Check for a nested Roman-numeral part BEFORE
+            # interpreting the line as a lettered part.
+            if (
+                roman_match
+                and current_major is not None
+                and parent_part is not None
+            ):
+                parent_number = f"{current_major}({parent_part})"
+                parent_prompt = ""
+
+                # The current record may be the parent instruction,
+                # rather than a question in its own right.
+                if (
+                    current_number == parent_number
+                    and current_marks is None
+                ):
+                    parent_prompt = _clean_text(current_lines)
+
+                    # Save the parent instruction as context instead
+                    # of emitting a separate parent question record.
+                    current_number = None
+                    current_lines = []
+                    current_marks = None
+                else:
+                    flush_current()
+
                 page_has_subquestions = True
-                parent_part = letter_match.group(1)
-                current_number = f"{current_major}({parent_part})"
-                current_lines = [letter_match.group(2)]
+                roman_part = roman_match.group(1).lower()
+                current_number = (
+                    f"{current_major}({parent_part})({roman_part})"
+                )
+
+                current_lines = []
+
+                if parent_prompt:
+                    current_lines.append(parent_prompt)
+
+                if roman_match.group(2).strip():
+                    current_lines.append(roman_match.group(2).strip())
+
                 major_prompt_lines = []
                 major_prompt_start = None
                 continue
 
-            if roman_match and current_major is not None and parent_part:
+            if letter_match and current_major is not None:
                 flush_current()
+
                 page_has_subquestions = True
-                roman_part = roman_match.group(1).lower()
-                current_number = f"{current_major}({parent_part})({roman_part})"
-                current_lines = [roman_match.group(2)]
+                parent_part = letter_match.group(1).lower()
+                current_number = f"{current_major}({parent_part})"
+                current_lines = []
+
+                if letter_match.group(2).strip():
+                    current_lines.append(letter_match.group(2).strip())
+
+                major_prompt_lines = []
+                major_prompt_start = None
                 continue
 
             if current_number is not None:
@@ -173,13 +333,15 @@ def parse_question_paper_text(
                 if stripped and not stripped.startswith("©"):
                     current_lines.append(stripped)
 
-            elif major_prompt_start is not None and line_index >= major_prompt_start:
+            elif (
+                major_prompt_start is not None
+                and line_index >= major_prompt_start
+            ):
                 major_prompt_lines.append(line)
 
         flush_current()
 
-        # Some tasks, such as Question 3, have a single extended-response
-        # prompt rather than lettered subquestions.
+        # Preserve extended-response questions without lettered parts.
         if (
             current_major is not None
             and not page_has_subquestions
@@ -187,13 +349,16 @@ def parse_question_paper_text(
             and major_prompt_lines
         ):
             prompt_text = _clean_text(major_prompt_lines)
+
             if prompt_text:
                 mark_values = re.findall(
                     r"Up to (\d+) marks? are available",
                     prompt_text,
                     re.IGNORECASE,
                 )
-                total_marks = sum(int(value) for value in mark_values) or None
+                total_marks = sum(
+                    int(value) for value in mark_values
+                ) or None
 
                 records.append(
                     _make_record(
