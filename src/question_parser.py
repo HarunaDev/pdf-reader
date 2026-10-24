@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 from dataclasses import replace
 
-from src.models import QuestionRecord, SourceMetadata
+from src.models import QuestionRecord, SourceMetadata, DocumentMetadata
 
 
 PAGE_PATTERN = re.compile(r"^--- Page (\d+) ---\s*$")
@@ -66,18 +66,47 @@ def _clean_text(lines: list[str]) -> str:
 
     return " ".join(cleaned_lines).strip()
 
+def _subject_slug(subject: str) -> str:
+    """Convert a subject name into a lowercase, hyphenated identifier."""
+    return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", subject.lower())).strip("-")
+
+# def _make_record(
+#     document_name: str,
+#     page_number: int,
+#     question_number: str,
+#     question_text: str,
+#     marks: int | None,
+# ) -> QuestionRecord:
+#     question_id = f"{document_name}:{question_number}"
+
+#     source = SourceMetadata(
+#         document_name=document_name,
+#         page_number=page_number,
+#         question_id=question_id,
+#     )
+
+#     return QuestionRecord(
+#         question_id=question_id,
+#         question_number=question_number,
+#         question_text=question_text,
+#         marks=marks,
+#         source=source,
+#     )
 
 def _make_record(
-    document_name: str,
+    document: DocumentMetadata,
     page_number: int,
     question_number: str,
     question_text: str,
     marks: int | None,
 ) -> QuestionRecord:
-    question_id = f"{document_name}:{question_number}"
+    subject_slug = _subject_slug(
+        document.subject or document.document_name.rsplit(".", 1)[0]
+    )
+    question_id = f"{subject_slug}:{question_number}"
 
     source = SourceMetadata(
-        document_name=document_name,
+        document_name=document.document_name,
         page_number=page_number,
         question_id=question_id,
     )
@@ -86,131 +115,14 @@ def _make_record(
         question_id=question_id,
         question_number=question_number,
         question_text=question_text,
-        marks=marks,
+        document=document,
         source=source,
+        marks=marks,
     )
-
-
-# def parse_question_paper_text(
-#     text: str,
-#     document_name: str,
-# ) -> list[QuestionRecord]:
-#     """Extract numbered questions and subquestions from question-paper text."""
-#     records: list[QuestionRecord] = []
-#     current_major: str | None = None
-#     parent_part: str | None = None
-
-#     for page_number, lines in _split_pages(text):
-#         current_number: str | None = None
-#         current_lines: list[str] = []
-#         current_marks: int | None = None
-#         page_has_subquestions = False
-#         major_prompt_lines: list[str] = []
-#         major_prompt_start: int | None = None
-
-#         def flush_current() -> None:
-#             nonlocal current_number, current_lines, current_marks
-
-#             if current_number is not None:
-#                 question_text = _clean_text(current_lines)
-
-#                 if question_text:
-#                     records.append(
-#                         _make_record(
-#                             document_name=document_name,
-#                             page_number=page_number,
-#                             question_number=current_number,
-#                             question_text=question_text,
-#                             marks=current_marks,
-#                         )
-#                     )
-
-#             current_number = None
-#             current_lines = []
-#             current_marks = None
-
-#         for line_index, line in enumerate(lines):
-#             stripped = line.strip()
-
-#             major_match = MAJOR_QUESTION_PATTERN.match(stripped)
-#             if major_match:
-#                 flush_current()
-#                 current_major = major_match.group(1)
-#                 parent_part = None
-#                 major_prompt_lines = []
-#                 major_prompt_start = line_index + 1
-#                 page_has_subquestions = False
-#                 continue
-
-#             letter_match = LETTER_PART_PATTERN.match(stripped)
-#             roman_match = ROMAN_PART_PATTERN.match(stripped)
-
-#             if letter_match and current_major is not None:
-#                 flush_current()
-#                 page_has_subquestions = True
-#                 parent_part = letter_match.group(1)
-#                 current_number = f"{current_major}({parent_part})"
-#                 current_lines = [letter_match.group(2)]
-#                 major_prompt_lines = []
-#                 major_prompt_start = None
-#                 continue
-
-#             if roman_match and current_major is not None and parent_part:
-#                 flush_current()
-#                 page_has_subquestions = True
-#                 roman_part = roman_match.group(1).lower()
-#                 current_number = f"{current_major}({parent_part})({roman_part})"
-#                 current_lines = [roman_match.group(2)]
-#                 continue
-
-#             if current_number is not None:
-#                 mark_matches = MARKS_PATTERN.findall(stripped)
-
-#                 if mark_matches:
-#                     current_marks = int(mark_matches[-1])
-#                     stripped = MARKS_PATTERN.sub("", stripped).strip()
-
-#                 if stripped and not stripped.startswith("©"):
-#                     current_lines.append(stripped)
-
-#             elif major_prompt_start is not None and line_index >= major_prompt_start:
-#                 major_prompt_lines.append(line)
-
-#         flush_current()
-
-#         # Some tasks, such as Question 3, have a single extended-response
-#         # prompt rather than lettered subquestions.
-#         if (
-#             current_major is not None
-#             and not page_has_subquestions
-#             and major_prompt_start is not None
-#             and major_prompt_lines
-#         ):
-#             prompt_text = _clean_text(major_prompt_lines)
-#             if prompt_text:
-#                 mark_values = re.findall(
-#                     r"Up to (\d+) marks? are available",
-#                     prompt_text,
-#                     re.IGNORECASE,
-#                 )
-#                 total_marks = sum(int(value) for value in mark_values) or None
-
-#                 records.append(
-#                     _make_record(
-#                         document_name=document_name,
-#                         page_number=page_number,
-#                         question_number=current_major,
-#                         question_text=prompt_text,
-#                         marks=total_marks,
-#                     )
-#                 )
-
-#     return records
-
 
 def parse_question_paper_text(
     text: str,
-    document_name: str,
+    document: DocumentMetadata,
 ) -> list[QuestionRecord]:
     """Extract numbered questions and nested subquestions."""
     records: list[QuestionRecord] = []
@@ -235,7 +147,7 @@ def parse_question_paper_text(
                 if question_text:
                     records.append(
                         _make_record(
-                            document_name=document_name,
+                            document=document,
                             page_number=page_number,
                             question_number=current_number,
                             question_text=question_text,
@@ -362,7 +274,7 @@ def parse_question_paper_text(
 
                 records.append(
                     _make_record(
-                        document_name=document_name,
+                        document=document,
                         page_number=page_number,
                         question_number=current_major,
                         question_text=prompt_text,
@@ -429,12 +341,13 @@ def parse_mark_scheme_text(
     return entries
 
 
+
 def attach_mark_scheme(
     records: list[QuestionRecord],
     mark_scheme: dict[str, dict[str, object]],
-    mark_scheme_name: str,
+    mark_scheme_document: DocumentMetadata,
 ) -> list[QuestionRecord]:
-    """Attach matching mark-scheme content to extracted question records."""
+    """Attach matching mark-scheme content to extracted questions."""
     enriched_records: list[QuestionRecord] = []
 
     for record in records:
@@ -442,16 +355,6 @@ def attach_mark_scheme(
 
         if entry is None:
             enriched_records.append(
-                # QuestionRecord(
-                #     **{
-                #         **record.to_dict(),
-                #         "review_required": True,
-                #         "review_issues": [
-                #             *record.review_issues,
-                #             "No matching mark-scheme entry was extracted.",
-                #         ],
-                #     }
-                # )
                 replace(
                     record,
                     review_required=True,
@@ -463,29 +366,27 @@ def attach_mark_scheme(
             )
             continue
 
-        source = SourceMetadata(
-            document_name=mark_scheme_name,
+        mark_scheme_source = SourceMetadata(
+            document_name=mark_scheme_document.document_name,
             page_number=int(entry["page"]),
-            question_id=f"{mark_scheme_name}:{record.question_number}",
+            question_id=record.question_id,
         )
 
         accepted_answers = list(entry["accepted_answers"])
         marking_guidance = list(entry["marking_guidance"])
+        entry_marks = entry["marks"]
 
         enriched_records.append(
-            QuestionRecord(
-                question_id=record.question_id,
-                question_number=record.question_number,
-                question_text=record.question_text,
-                question_type=record.question_type,
-                marks=record.marks if record.marks is not None else entry["marks"],
-                instructions=record.instructions,
-                source=record.source,
+            replace(
+                record,
+                marks=(
+                    record.marks
+                    if record.marks is not None
+                    else entry_marks
+                ),
                 accepted_answers=accepted_answers,
                 marking_guidance=marking_guidance,
-                mark_scheme_source=source,
-                review_required=record.review_required,
-                review_issues=record.review_issues,
+                mark_scheme_source=mark_scheme_source,
             )
         )
 

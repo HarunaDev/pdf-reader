@@ -7,6 +7,8 @@ from src.question_parser import (attach_mark_scheme, parse_mark_scheme_text, par
 from src.validator import validate_records
 from src.json_writer import write_questions_json
 from src.excel_writer import save_tables_to_excel
+from src.models import DocumentMetadata
+from src.metadata_extractor import extract_document_metadata
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -85,6 +87,22 @@ def main() -> None:
     print(f"Mark scheme processed: {MARK_SCHEME_PDF_PATH.name}")
     print(f"Mark scheme text saved to: {MARK_SCHEME_TEXT_PATH}")
 
+    question_document = extract_document_metadata(
+    document_text=question_text,
+    document_name=QUESTION_PDF_PATH.name,
+)
+
+    mark_scheme_document = extract_document_metadata(
+        document_text=mark_scheme_text,
+        document_name=MARK_SCHEME_PDF_PATH.name,
+    )
+
+    print("Question paper metadata:")
+    print(question_document)
+
+    print("Mark scheme metadata:")
+    print(mark_scheme_document)
+
     # Export extracted tables from both documents.
     all_tables = question_tables + mark_scheme_tables
 
@@ -100,7 +118,7 @@ def main() -> None:
     # retains the correct source document name.
     question_records = parse_question_paper_text(
         text=question_text,
-        document_name=QUESTION_PDF_PATH.name,
+        document=question_document,
     )
 
     mark_scheme_entries = parse_mark_scheme_text(mark_scheme_text)
@@ -108,7 +126,7 @@ def main() -> None:
     records = attach_mark_scheme(
         records=question_records,
         mark_scheme=mark_scheme_entries,
-        mark_scheme_name=MARK_SCHEME_PDF_PATH.name,
+        mark_scheme_document=mark_scheme_document,
     )
 
     # Validate and separate records.

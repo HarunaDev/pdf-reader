@@ -41,6 +41,22 @@ def validate_records(
             if not record.source.question_id.strip():
                 issues.append("Source question ID is missing.")
 
+        if not record.document.document_name.strip():
+            issues.append("Document name is missing.")
+
+        if not record.document.subject or not record.document.subject.strip():
+            issues.append("Examination subject is missing.")
+
+        if (
+            record.document.examination_year is not None
+            and record.document.examination_year < 1
+        ):
+            issues.append("Examination year must be positive.")
+
+        if record.document.examination_session is not None:
+            if not record.document.examination_session.strip():
+                issues.append("Examination session cannot be empty.")
+
         if record.marks is not None and record.marks < 0:
             issues.append("Marks cannot be negative.")
 

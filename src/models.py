@@ -1,8 +1,18 @@
-
 from dataclasses import asdict, dataclass, field
 from typing import Literal
 
 DocumentType = Literal["question_paper", "mark_scheme", "unknown"]
+
+PaperType = Literal[
+    "Reading",
+    "Writing",
+    "Listening",
+    "Speaking",
+    "Reading and Writing",
+    "Other",
+    "Unknown",
+]
+
 QuestionType = Literal[
     "short_answer",
     "multiple_choice",
@@ -20,23 +30,35 @@ class DocumentMetadata:
     document_name: str
     document_type: DocumentType
     subject: str | None = None
+    subject_code: str | None = None
     paper_code: str | None = None
+    paper_number: int | None = None
+    paper_title: str | None = None
+    paper_type: PaperType = "Unknown"
     examination_session: str | None = None
     examination_year: int | None = None
+    qualification: str | None = None
 
 @dataclass(frozen=True, slots=True)
 class SourceMetadata:
+    """Location of extracted content in its original document."""
     document_name: str
     page_number: int
     question_id: str
 
 @dataclass(frozen=True, slots=True)
 class QuestionRecord:
-    """A normalized examination question."""
+    """A structured examination question and it's marking information."""
 
     question_id: str
     question_number: str
     question_text: str
+    document: DocumentMetadata
+    source: SourceMetadata
+
+    document: DocumentMetadata
+    # source: SourceMetadata
+
     question_type: QuestionType = "unknown"
     marks: float | None = None
     instructions: list[str] = field(default_factory=list)
