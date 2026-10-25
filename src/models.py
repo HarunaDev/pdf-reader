@@ -96,7 +96,9 @@ class QuestionRecord:
 
     # Populated when a matching mark scheme is available.
     accepted_answers: list[str] = field(default_factory=list)
+    indicative_content: list[str] = field(default_factory=list)
     marking_guidance: list[str] = field(default_factory=list)
+    level_descriptors: list[str] = field(default_factory=list)
     mark_scheme_source: SourceDocumentReference | None = None
 
     # Set when extraction is uncertain or incomplete.
