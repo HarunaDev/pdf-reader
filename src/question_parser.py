@@ -30,6 +30,36 @@ MARK_SCHEME_ITEM_PATTERN = re.compile(
 )
 BULLET_PATTERN = re.compile(r"^\s*[•▪◦]\s*(.+)$")
 
+MARK_SCHEME_MAJOR_ROW_PATTERN = re.compile(
+    r"^(\d+)\s+(.+?)\s+(\d+)\s*$"
+)
+
+INDICATIVE_CONTENT_PATTERN = re.compile(
+    r"^(?:"
+    r"INDICATIVE\b"
+    r"|OVERVIEW MIGHT INCLUDE\b"
+    r"|CANDIDATES MAY REFER TO\b"
+    r"|CANDIDATES SHOULD SELECT IDEAS\b"
+    r"|ANNOTATE A\d+\b"
+    r"|\d+\s+A\d+\s*:"
+    r"|A\d+\s*:"
+    r")",
+    re.IGNORECASE,
+)
+
+LEVEL_DESCRIPTOR_PATTERN = re.compile(
+    r"^(?:MARKING CRITERIA\b|MARKING CRITERIA FOR\b|"
+    r"TABLE [AB],\s*(?:READING|WRITING)\b|"
+    r"LEVEL\s+MARKS\s+DESCRIPTION\b)",
+    re.IGNORECASE,
+)
+
+SECTION_HEADER_PATTERN = re.compile(
+    r"^(?:NOTES ON THE TASK\b|"
+    r"QUESTION ANSWER MARKS$)",
+    re.IGNORECASE,
+)
+
 
 def _split_pages(text: str) -> list[tuple[int, list[str]]]:
     """Split extracted document text into numbered pages."""
@@ -306,47 +336,345 @@ def parse_question_paper_text(
     return records
 
 
+# def parse_mark_scheme_text(
+#     text: str,
+# ) -> dict[str, dict[str, object]]:
+#     """Extract mark-scheme entries keyed by question number."""
+#     entries: dict[str, dict[str, object]] = {}
+
+#     current_number: str | None = None
+#     current_page = 1
+#     current_lines: list[str] = []
+#     current_header = ""
+
+#     def flush_entry() -> None:
+#         if current_number is None:
+#             return
+
+#         accepted_answers: list[str] = []
+#         guidance_lines: list[str] = []
+
+#         header_mark = re.search(r"\s+(\d+)\s*$", current_header)
+#         marks = int(header_mark.group(1)) if header_mark else None
+
+#         for line in current_lines:
+#             bullet_match = BULLET_PATTERN.match(line)
+
+#             if bullet_match:
+#                 accepted_answers.append(bullet_match.group(1).strip())
+#             elif line.strip():
+#                 guidance_lines.append(line.strip())
+
+#         entries[current_number] = {
+#             "page": current_page,
+#             "marks": marks,
+#             "accepted_answers": accepted_answers,
+#             "marking_guidance": guidance_lines,
+#         }
+
+#     for page_number, lines in _split_pages(text):
+#         current_page = page_number
+
+#         for line in lines:
+#             stripped = line.strip()
+#             item_match = MARK_SCHEME_ITEM_PATTERN.match(stripped)
+
+#             if item_match:
+#                 flush_entry()
+
+#                 current_number = item_match.group(1).lower()
+#                 current_header = item_match.group(2)
+#                 current_lines = []
+#             elif current_number is not None:
+#                 current_lines.append(stripped)
+
+#     flush_entry()
+#     return entries
+
+
+# def parse_mark_scheme_text(
+#     text: str,
+# ) -> dict[str, dict[str, object]]:
+#     """Parse mark-scheme entries with question and section boundaries."""
+#     entries: dict[str, dict[str, object]] = {}
+
+#     current_number: str | None = None
+#     current_page: int | None = None
+#     current_header = ""
+#     current_lines: list[str] = []
+
+#     pending_major: str | None = None
+#     section_type = "general"
+
+#     def flush_entry() -> None:
+#         nonlocal current_number
+#         nonlocal current_page
+#         nonlocal current_header
+#         nonlocal current_lines
+#         nonlocal section_type
+
+#         if current_number is None:
+#             return
+
+#         accepted_answers: list[str] = []
+#         marking_guidance: list[str] = []
+#         indicative_content: list[str] = []
+#         level_descriptors: list[str] = []
+
+#         header_mark = re.search(r"\s+(\d+)\s*$", current_header)
+#         marks = int(header_mark.group(1)) if header_mark else None
+
+#         mode = "general"
+
+#         for line in current_lines:
+#             value = line.strip()
+
+#             if not value:
+#                 continue
+
+#             if INDICATIVE_CONTENT_PATTERN.match(value):
+#                 mode = "indicative"
+#                 continue
+
+#             if LEVEL_DESCRIPTOR_PATTERN.match(value):
+#                 mode = "levels"
+#                 continue
+
+#             if SECTION_HEADER_PATTERN.match(value):
+#                 # Notes on a task belong to its indicative content.
+#                 if value.upper().startswith("NOTES ON THE TASK"):
+#                     mode = "indicative"
+#                 continue
+
+#             if value.startswith(
+#                 ("© UCLES", "© Cambridge", "0500/")
+#             ) or value == "PUBLISHED":
+#                 continue
+
+#             if value in {"Question Answer Marks", "Question Answer"}:
+#                 continue
+
+#             if mode == "indicative":
+#                 indicative_content.append(value)
+#             elif mode == "levels":
+#                 level_descriptors.append(value)
+#             else:
+#                 bullet_match = BULLET_PATTERN.match(value)
+
+#                 if bullet_match:
+#                     accepted_answers.append(
+#                         bullet_match.group(1).strip()
+#                     )
+#                 else:
+#                     marking_guidance.append(value)
+
+#         entries[current_number] = {
+#             "page": current_page,
+#             "marks": marks,
+#             "question_text": current_header,
+#             "accepted_answers": accepted_answers,
+#             "marking_guidance": marking_guidance,
+#             "indicative_content": indicative_content,
+#             "level_descriptors": level_descriptors,
+#         }
+
+#         current_number = None
+#         current_page = None
+#         current_header = ""
+#         current_lines = []
+#         section_type = "general"
+
+#     for page_number, lines in _split_pages(text):
+#         for line in lines:
+#             stripped = line.strip()
+
+#             # A major heading closes the preceding entry.
+#             major_match = MAJOR_QUESTION_PATTERN.match(stripped)
+
+#             if major_match:
+#                 flush_entry()
+#                 pending_major = major_match.group(1)
+#                 continue
+
+#             # Ordinary entries, e.g. 1(a), 2(b)(i), 2(d).
+#             item_match = MARK_SCHEME_ITEM_PATTERN.match(stripped)
+
+#             if item_match:
+#                 flush_entry()
+
+#                 current_number = item_match.group(1).lower()
+#                 current_header = item_match.group(2)
+#                 current_page = page_number
+#                 current_lines = []
+#                 pending_major = None
+#                 continue
+
+#             # Major task rows, e.g.:
+#             # 3 You are Mike. ... 25
+#             major_row = MARK_SCHEME_MAJOR_ROW_PATTERN.match(stripped)
+
+#             if (
+#                 major_row
+#                 and pending_major is not None
+#                 and major_row.group(1) == pending_major
+#             ):
+#                 flush_entry()
+
+#                 current_number = pending_major
+#                 current_header = (
+#                     f"{major_row.group(2)} {major_row.group(3)}"
+#                 )
+#                 current_page = page_number
+#                 current_lines = []
+#                 pending_major = None
+#                 continue
+
+#             # Recognise section changes without closing the question.
+#             if current_number is not None:
+#                 if INDICATIVE_CONTENT_PATTERN.match(stripped):
+#                     section_type = "indicative"
+#                 elif LEVEL_DESCRIPTOR_PATTERN.match(stripped):
+#                     section_type = "levels"
+
+#                 current_lines.append(stripped)
+
+#     flush_entry()
+#     return entries
+
+
 def parse_mark_scheme_text(
     text: str,
 ) -> dict[str, dict[str, object]]:
-    """Extract mark-scheme entries keyed by question number."""
+    """Parse mark-scheme entries without crossing question boundaries."""
     entries: dict[str, dict[str, object]] = {}
 
     current_number: str | None = None
-    current_page = 1
-    current_lines: list[str] = []
+    current_page: int | None = None
     current_header = ""
+    current_lines: list[str] = []
+
+    pending_major: str | None = None
 
     def flush_entry() -> None:
+        nonlocal current_number
+        nonlocal current_page
+        nonlocal current_header
+        nonlocal current_lines
+
         if current_number is None:
             return
 
         accepted_answers: list[str] = []
-        guidance_lines: list[str] = []
+        marking_guidance: list[str] = []
+        indicative_content: list[str] = []
+        level_descriptors: list[str] = []
 
         header_mark = re.search(r"\s+(\d+)\s*$", current_header)
         marks = int(header_mark.group(1)) if header_mark else None
 
-        for line in current_lines:
-            bullet_match = BULLET_PATTERN.match(line)
+        mode = "general"
 
-            if bullet_match:
-                accepted_answers.append(bullet_match.group(1).strip())
-            elif line.strip():
-                guidance_lines.append(line.strip())
+        for line in current_lines:
+            value = line.strip()
+
+            if not value:
+                continue
+
+            # Switch classification when a section heading appears.
+            if INDICATIVE_CONTENT_PATTERN.match(value):
+                mode = "indicative"
+                continue
+
+            if LEVEL_DESCRIPTOR_PATTERN.match(value):
+                mode = "levels"
+                continue
+
+            if SECTION_HEADER_PATTERN.match(value):
+                if value.upper().startswith("NOTES ON THE TASK"):
+                    mode = "indicative"
+                continue
+
+            # Ignore recurring PDF headers and footers.
+            if (
+                value.startswith(
+                    ("© UCLES", "© Cambridge", "0500/")
+                )
+                or value == "PUBLISHED"
+                or value in {
+                    "Question Answer Marks",
+                    "Question Answer",
+                }
+            ):
+                continue
+
+            if mode == "indicative":
+                indicative_content.append(value)
+            elif mode == "levels":
+                level_descriptors.append(value)
+            else:
+                bullet_match = BULLET_PATTERN.match(value)
+
+                if bullet_match:
+                    answer_text = bullet_match.group(1).strip()
+                    accepted_answers.extend(
+                        option.strip()
+                        for option in answer_text.split("/")
+                        if option.strip()
+                    )
+                else:
+                    marking_guidance.append(value)
 
         entries[current_number] = {
             "page": current_page,
             "marks": marks,
+            "question_text": current_header,
             "accepted_answers": accepted_answers,
-            "marking_guidance": guidance_lines,
+            "marking_guidance": marking_guidance,
+            "indicative_content": indicative_content,
+            "level_descriptors": level_descriptors,
         }
 
-    for page_number, lines in _split_pages(text):
-        current_page = page_number
+        current_number = None
+        current_page = None
+        current_header = ""
+        current_lines = []
 
+    for page_number, lines in _split_pages(text):
         for line in lines:
             stripped = line.strip()
+
+            if not stripped:
+                continue
+
+            # A major heading closes the previous entry immediately.
+            major_match = MAJOR_QUESTION_PATTERN.match(stripped)
+
+            if major_match:
+                flush_entry()
+                pending_major = major_match.group(1)
+                continue
+
+            # Major-question table row, e.g.:
+            # 3 You are Mike. ... 25
+            major_row = MARK_SCHEME_MAJOR_ROW_PATTERN.match(stripped)
+
+            if (
+                major_row is not None
+                and pending_major is not None
+                and major_row.group(1) == pending_major
+            ):
+                flush_entry()
+
+                current_number = pending_major
+                current_header = (
+                    f"{major_row.group(2)} {major_row.group(3)}"
+                )
+                current_page = page_number
+                current_lines = []
+                pending_major = None
+                continue
+
+            # Subquestions such as 1(a), 2(b)(i), and 2(d).
             item_match = MARK_SCHEME_ITEM_PATTERN.match(stripped)
 
             if item_match:
@@ -354,12 +682,95 @@ def parse_mark_scheme_text(
 
                 current_number = item_match.group(1).lower()
                 current_header = item_match.group(2)
+                current_page = page_number
                 current_lines = []
-            elif current_number is not None:
+                pending_major = None
+                continue
+
+            if current_number is not None:
                 current_lines.append(stripped)
 
     flush_entry()
     return entries
+
+
+
+
+# def attach_mark_scheme(
+#     records: list[QuestionRecord],
+#     mark_scheme: dict[str, dict[str, object]],
+#     mark_scheme_document: DocumentMetadata,
+#     mark_scheme_document_id: str | None = None,
+# ) -> list[QuestionRecord]:
+#     """Attach matching answers and marking guidance to each question."""
+#     document_id = (
+#         mark_scheme_document_id
+#         or _document_id(mark_scheme_document.document_name)
+#     )
+#     enriched_records: list[QuestionRecord] = []
+
+#     for record in records:
+#         entry = mark_scheme.get(record.question_number.lower())
+
+#         if entry is None:
+#             enriched_records.append(
+#                 replace(
+#                     record,
+#                     review_required=True,
+#                     review_issues=[
+#                         *record.review_issues,
+#                         "No matching mark-scheme entry was extracted.",
+#                     ],
+#                 )
+#             )
+#             continue
+
+#         page_value = entry.get("page")
+#         answers_value = entry.get("accepted_answers", [])
+#         guidance_value = entry.get("marking_guidance", [])
+#         marks_value = entry.get("marks")
+
+#         mark_scheme_source = (
+#             SourceDocumentReference(
+#                 document_id=document_id,
+#                 page_number=int(page_value),
+#             )
+#             if page_value is not None
+#             else None
+#         )
+
+#         accepted_answers = (
+#             [str(value) for value in answers_value]
+#             if isinstance(answers_value, list)
+#             else []
+#         )
+#         marking_guidance = (
+#             [str(value) for value in guidance_value]
+#             if isinstance(guidance_value, list)
+#             else []
+#         )
+
+#         scheme_marks = (
+#             float(marks_value)
+#             if isinstance(marks_value, (int, float))
+#             else None
+#         )
+
+#         enriched_records.append(
+#             replace(
+#                 record,
+#                 marks=(
+#                     record.marks
+#                     if record.marks is not None
+#                     else scheme_marks
+#                 ),
+#                 accepted_answers=accepted_answers,
+#                 marking_guidance=marking_guidance,
+#                 mark_scheme_source=mark_scheme_source,
+#             )
+#         )
+
+#     return enriched_records
 
 
 def attach_mark_scheme(
@@ -368,7 +779,7 @@ def attach_mark_scheme(
     mark_scheme_document: DocumentMetadata,
     mark_scheme_document_id: str | None = None,
 ) -> list[QuestionRecord]:
-    """Attach matching answers and marking guidance to each question."""
+    """Attach matching mark-scheme content to each question."""
     document_id = (
         mark_scheme_document_id
         or _document_id(mark_scheme_document.document_name)
@@ -393,7 +804,9 @@ def attach_mark_scheme(
 
         page_value = entry.get("page")
         answers_value = entry.get("accepted_answers", [])
+        indicative_value = entry.get("indicative_content", [])
         guidance_value = entry.get("marking_guidance", [])
+        descriptors_value = entry.get("level_descriptors", [])
         marks_value = entry.get("marks")
 
         mark_scheme_source = (
@@ -401,7 +814,7 @@ def attach_mark_scheme(
                 document_id=document_id,
                 page_number=int(page_value),
             )
-            if page_value is not None
+            if isinstance(page_value, (int, float))
             else None
         )
 
@@ -410,9 +823,19 @@ def attach_mark_scheme(
             if isinstance(answers_value, list)
             else []
         )
+        indicative_content = (
+            [str(value) for value in indicative_value]
+            if isinstance(indicative_value, list)
+            else []
+        )
         marking_guidance = (
             [str(value) for value in guidance_value]
             if isinstance(guidance_value, list)
+            else []
+        )
+        level_descriptors = (
+            [str(value) for value in descriptors_value]
+            if isinstance(descriptors_value, list)
             else []
         )
 
@@ -431,7 +854,9 @@ def attach_mark_scheme(
                     else scheme_marks
                 ),
                 accepted_answers=accepted_answers,
+                indicative_content=indicative_content,
                 marking_guidance=marking_guidance,
+                level_descriptors=level_descriptors,
                 mark_scheme_source=mark_scheme_source,
             )
         )
