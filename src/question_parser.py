@@ -608,8 +608,11 @@ def parse_mark_scheme_text(
                 bullet_match = BULLET_PATTERN.match(value)
 
                 if bullet_match:
-                    accepted_answers.append(
-                        bullet_match.group(1).strip()
+                    answer_text = bullet_match.group(1).strip()
+                    accepted_answers.extend(
+                        option.strip()
+                        for option in answer_text.split("/")
+                        if option.strip()
                     )
                 else:
                     marking_guidance.append(value)
