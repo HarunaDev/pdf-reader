@@ -35,8 +35,15 @@ MARK_SCHEME_MAJOR_ROW_PATTERN = re.compile(
 )
 
 INDICATIVE_CONTENT_PATTERN = re.compile(
-    r"^(?:INDICATIVE\b|OVERVIEW MIGHT INCLUDE\b|"
-    r"CANDIDATES MAY REFER TO\b)",
+    r"^(?:"
+    r"INDICATIVE\b"
+    r"|OVERVIEW MIGHT INCLUDE\b"
+    r"|CANDIDATES MAY REFER TO\b"
+    r"|CANDIDATES SHOULD SELECT IDEAS\b"
+    r"|ANNOTATE A\d+\b"
+    r"|\d+\s+A\d+\s*:"
+    r"|A\d+\s*:"
+    r")",
     re.IGNORECASE,
 )
 
