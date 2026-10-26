@@ -39,6 +39,7 @@ INDICATIVE_CONTENT_PATTERN = re.compile(
     r"INDICATIVE\b"
     r"|OVERVIEW MIGHT INCLUDE\b"
     r"|CANDIDATES MAY REFER TO\b"
+    r"|RESPONSES MIGHT USE THE FOLLOWING\b"
     r"|CANDIDATES SHOULD SELECT IDEAS\b"
     r"|ANNOTATE A\d+\b"
     r"|\d+\s+A\d+\s*:"
@@ -57,6 +58,11 @@ LEVEL_DESCRIPTOR_PATTERN = re.compile(
 SECTION_HEADER_PATTERN = re.compile(
     r"^(?:NOTES ON THE TASK\b|"
     r"QUESTION ANSWER MARKS$)",
+    re.IGNORECASE,
+)
+
+ANSWER_NOTE_PATTERN = re.compile(
+    r"^(?:versions?\s*\(|needs?\s+a\s+sense\s+of\s+plural\b)",
     re.IGNORECASE,
 )
 
@@ -581,7 +587,7 @@ def parse_mark_scheme_text(
                 continue
 
             # Switch classification when a section heading appears.
-            if INDICATIVE_CONTENT_PATTERN.match(value):
+            if INDICATIVE_CONTENT_PATTERN.match(stripped):
                 mode = "indicative"
                 continue
 
@@ -612,6 +618,9 @@ def parse_mark_scheme_text(
             elif mode == "levels":
                 level_descriptors.append(value)
             else:
+                if ANSWER_NOTE_PATTERN.match(value):
+                    accepted_answers.append(value)
+                    continue
                 bullet_match = BULLET_PATTERN.match(value)
 
                 if bullet_match:
