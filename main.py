@@ -230,8 +230,12 @@ def main() -> None:
     extraction_output = ExtractionOutput(
         paper=paper,
         source_documents=source_documents,
-        valid_records=valid_records,
-        review_records=review_records,
+        # valid_records=valid_records,
+        # review_records=review_records,
+        records=[
+        *valid_records,
+        *review_records,
+    ],
     )
 
     # 12. Serialize the complete structure to JSON.
