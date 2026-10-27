@@ -1,0 +1,626 @@
+[
+  {
+    "name": "Accounting",
+    "syllabus_code": "0452",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-accounting-0452/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Accounting (9-1)",
+    "syllabus_code": "0985",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-accounting-9-1-0985/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Afrikaans - Second Language",
+    "syllabus_code": "0548",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-afrikaans-second-language-0548/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Agriculture",
+    "syllabus_code": "0600",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-agriculture-0600/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Arabic (9-1)",
+    "syllabus_code": "7180",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-arabic-9-1-7180/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Arabic - First Language",
+    "syllabus_code": "0508",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-arabic-first-language-0508/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Arabic - First Language (9-1)",
+    "syllabus_code": "7184",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-arabic-9-1-first-language-7184/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Arabic - Foreign Language",
+    "syllabus_code": "0544",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-arabic-foreign-language-0544/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Art & Design",
+    "syllabus_code": "0400",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-art-and-design-0400/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Art & Design (9-1)",
+    "syllabus_code": "0989",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-art-and-design-9-1-0989/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Bahasa Indonesia",
+    "syllabus_code": "0538",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-bahasa-indonesia-0538/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Biology",
+    "syllabus_code": "0610",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-biology-0610/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Biology (9-1)",
+    "syllabus_code": "0970",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-biology-9-1-0970/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Business",
+    "syllabus_code": "0264",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-business-0264/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Business (9-1)",
+    "syllabus_code": "0774",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-business-9-1-0774/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Business Studies",
+    "syllabus_code": "0450",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-business-studies-0450/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Business Studies (9-1)",
+    "syllabus_code": "0986",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-business-studies-9-1-0986/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Chemistry",
+    "syllabus_code": "0620",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Chemistry (9-1)",
+    "syllabus_code": "0971",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-9-1-0971/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Chinese (Mandarin) - Foreign Language",
+    "syllabus_code": "0547",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chinese-mandarin-foreign-language-0547/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Chinese - First Language",
+    "syllabus_code": "0509",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chinese-first-language-0509/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Chinese - Second Language",
+    "syllabus_code": "0523",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chinese-second-language-0523/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Commerce",
+    "syllabus_code": "0715",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-commerce-0715/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Computer Science",
+    "syllabus_code": "0265",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-computer-science-0265/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Computer Science",
+    "syllabus_code": "0478",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-computer-science-0478/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Computer Science (9-1)",
+    "syllabus_code": "0984",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-9-1-computer-science-0984/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Design & Technology",
+    "syllabus_code": "0445",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-design-and-technology-0445/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Design & Technology (9-1)",
+    "syllabus_code": "0979",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-design-and-technology-9-1-0979/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Drama",
+    "syllabus_code": "0411",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-drama-0411/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Drama (9-1)",
+    "syllabus_code": "0994",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-drama-9-1-0994/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Economics",
+    "syllabus_code": "0455",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-economics-0455/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Economics (9-1)",
+    "syllabus_code": "0987",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-economics-9-1-0987/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English (as an Additional Language)",
+    "syllabus_code": "0472",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-as-an-additional-language-0472/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English (as an Additional Language) (9-1)",
+    "syllabus_code": "0772",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-as-an-additional-language-9-1-0772/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English (Core) as a Second Language (Egypt)",
+    "syllabus_code": "0465",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-core-english-as-second-language-0465/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English - First Language",
+    "syllabus_code": "0500",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-first-language-0500/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English - First Language (9-1)",
+    "syllabus_code": "0990",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-9-1-first-language-english-0990/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English - First Language (US)",
+    "syllabus_code": "0524",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-first-language-us-0524/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English as a Second Language (Count-in speaking)",
+    "syllabus_code": "0511",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-second-language-count-in-oral-0511/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English as a Second Language (Count-in Speaking) (9-1)",
+    "syllabus_code": "0991",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-second-language-9-1-count-in-speaking/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English as a Second Language (Speaking endorsement)",
+    "syllabus_code": "0510",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-second-language-oral-endorsement-0510/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English as a Second Language (Speaking Endorsement) (9-1)",
+    "syllabus_code": "0993",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-second-language-speaking-endorsement-9-1-0993/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "English – Literature in English (9-1)",
+    "syllabus_code": "0992",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-literature-0992/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Enterprise",
+    "syllabus_code": "0454",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-enterprise-0454/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Environmental Management",
+    "syllabus_code": "0680",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-environmental-management-0680/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Food & Nutrition",
+    "syllabus_code": "0648",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-food-and-nutrition-0648/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "French (9-1)",
+    "syllabus_code": "7156",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-french-9-1-7156/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "French - First Language",
+    "syllabus_code": "0501",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-french-first-language-0501/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "French - Foreign Language",
+    "syllabus_code": "0520",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-french-foreign-language-0520/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Geography",
+    "syllabus_code": "0460",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-geography-0460/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Geography (9-1)",
+    "syllabus_code": "0976",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-geography-9-1-0976/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "German (9-1)",
+    "syllabus_code": "7159",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-german-9-1-7159/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "German - First Language",
+    "syllabus_code": "0505",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-german-first-language-0505/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "German - Foreign Language",
+    "syllabus_code": "0525",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-german-foreign-language-0525/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Global Perspectives",
+    "syllabus_code": "0457",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-global-perspectives-0457/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Hindi as a Second Language",
+    "syllabus_code": "0549",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-hindi-as-a-second-language-0549/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "History",
+    "syllabus_code": "0470",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-history-0470/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "History (9-1)",
+    "syllabus_code": "0977",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-history-9-1-0977/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "History - American (US)",
+    "syllabus_code": "0409",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-history-american-us-0409/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Information and Communication Technology",
+    "syllabus_code": "0417",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-information-and-communication-technology-0417/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Information and Communication Technology (9-1)",
+    "syllabus_code": "0983",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-information-and-communication-technology-9-1-0983/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "IsiZulu as a Second Language",
+    "syllabus_code": "0531",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-isizulu-as-a-second-language-0531/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Islamiyat",
+    "syllabus_code": "0493",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-islamiyat-0493/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Italian (9-1)",
+    "syllabus_code": "7164",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-italian-9-1-7164/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Italian - Foreign Language",
+    "syllabus_code": "0535",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-italian-foreign-language-0535/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Japanese - Foreign Language",
+    "syllabus_code": "0716",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-japanese-0716/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Latin",
+    "syllabus_code": "0480",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-latin-0480/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Malay - First Language",
+    "syllabus_code": "0696",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-malay-0696/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Malay - Foreign Language",
+    "syllabus_code": "0546",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-malay-foreign-language-0546/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Marine Science",
+    "syllabus_code": "0697",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-marine-science-0697/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Mathematics",
+    "syllabus_code": "0580",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-0580/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Mathematics (9-1)",
+    "syllabus_code": "0980",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-9-1-0980/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Mathematics (US)",
+    "syllabus_code": "0444",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-us-0444/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Mathematics - Additional",
+    "syllabus_code": "0606",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-additional-0606/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Mathematics - International",
+    "syllabus_code": "0607",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-international-mathematics-0607/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Music",
+    "syllabus_code": "0410",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-music-0410/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Music (9-1)",
+    "syllabus_code": "0978",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-music-9-1-0978/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Pakistan Studies",
+    "syllabus_code": "0448",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-pakistan-studies-0448/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Physical Education",
+    "syllabus_code": "0413",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physical-education-0413/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Physical Education (9-1)",
+    "syllabus_code": "0995",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physical-education-0995/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Physical Science",
+    "syllabus_code": "0652",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physical-science-0652/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Physics",
+    "syllabus_code": "0625",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physics-0625/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Physics (9-1)",
+    "syllabus_code": "0972",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physics-9-1-0972/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Portuguese - First Language",
+    "syllabus_code": "0504",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-portuguese-first-language-0504/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Psychology",
+    "syllabus_code": "0266",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-psychology-0266/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Religious Studies",
+    "syllabus_code": "0490",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-religious-studies-0490/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Sanskrit",
+    "syllabus_code": "0499",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-sanskrit-0499/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Science - Combined",
+    "syllabus_code": "0653",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-science-combined-0653/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Sciences - Co-ordinated (9-1)",
+    "syllabus_code": "0973",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-sciences-9-1-only-0973/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Sciences - Co-ordinated (Double)",
+    "syllabus_code": "0654",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-sciences-co-ordinated-double-0654/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Setswana - First Language",
+    "syllabus_code": "0698",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-setswana-0698/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Sociology",
+    "syllabus_code": "0495",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-sociology-0495/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Spanish (9-1)",
+    "syllabus_code": "7160",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-spanish-9-1-7160/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Spanish - First Language",
+    "syllabus_code": "0502",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-spanish-first-language-0502/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Spanish - Foreign Language",
+    "syllabus_code": "0530",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-spanish-foreign-language-0530/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Spanish - Literature in Spanish",
+    "syllabus_code": "0474",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-literature-in-spanish-0474/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Statistics",
+    "syllabus_code": "0479",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-statistics-0479/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Swahili",
+    "syllabus_code": "0262",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-swahili-0262/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Thai - First Language",
+    "syllabus_code": "0518",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-thai-first-language-0518/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Travel & Tourism",
+    "syllabus_code": "0471",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-travel-and-tourism-0471/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Turkish - First Language",
+    "syllabus_code": "0513",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-turkish-first-language-0513/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Urdu as a Second Language",
+    "syllabus_code": "0539",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-urdu-as-a-second-language-0539/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "Vietnamese - First Language",
+    "syllabus_code": "0695",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-vietnamese-0695/",
+    "qualification": "Cambridge IGCSE"
+  },
+  {
+    "name": "World Literature",
+    "syllabus_code": "0408",
+    "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-world-literature-0408/",
+    "qualification": "Cambridge IGCSE"
+  }
+]
