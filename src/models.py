@@ -86,6 +86,8 @@ class QuestionRecord:
     # document: DocumentMetadata
     source: SourceDocumentReference
 
+    parent_question_id: str | None = None
+
     # document: DocumentMetadata
     # source: SourceMetadata
 
@@ -106,17 +108,71 @@ class QuestionRecord:
     review_issues: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, object]:
-        """Convert the record into a JSON-serializable dictionary."""
-        return asdict(self)
+        """Convert the record into a JSON-serializable record based on the agreed import contract."""
+        return {
+            "question_id": self.question_id,
+            "question_number": self.question_number,
+            "parent_question_id": self.parent_question_id,
+            "question_text": self.question_text,
+            "question_type": self.question_type,
+            "marks": self.marks,
+            "instructions": self.instructions,
+            "answers": {
+                "accepted_answers": self.accepted_answers,
+                "indicative_content": self.indicative_content,
+                "marking_guidance": self.marking_guidance,
+                "level_descriptors": self.level_descriptors,
+            },
+            "sources": {
+                "question": asdict(self.source),
+                "mark_scheme": (
+                    asdict(self.mark_scheme_source)
+                    if self.mark_scheme_source is not None
+                    else None
+                ),
+            },
+            "review": {
+                "status": (
+                    "needs_review"
+                    if self.review_required
+                    else "ready_for_import"
+                ),
+                "issues": self.review_issues,
+            },
+        }
+
+# @dataclass(frozen=True, slots=True)
+# class ExtractionOutput:
+#     """Complete, document-level result produced by the extraction pipeline."""
+
+#     paper: ExaminationPaper
+#     source_documents: list[SourceDocument]
+#     valid_records: list[QuestionRecord]
+#     review_records: list[QuestionRecord]
+
+#     def to_dict(self) -> dict[str, object]:
+#         return asdict(self)
 
 @dataclass(frozen=True, slots=True)
 class ExtractionOutput:
-    """Complete, document-level result produced by the extraction pipeline."""
+    """Versioned document-level result of the extraction pipeline."""
 
     paper: ExaminationPaper
     source_documents: list[SourceDocument]
-    valid_records: list[QuestionRecord]
-    review_records: list[QuestionRecord]
+    records: list[QuestionRecord]
+    schema_version: str = "1.0.0"
 
     def to_dict(self) -> dict[str, object]:
-        return asdict(self)
+        """Convert the result into the public import contract."""
+        return {
+            "schema_version": self.schema_version,
+            "paper": asdict(self.paper),
+            "source_documents": [
+                asdict(document)
+                for document in self.source_documents
+            ],
+            "records": [
+                record.to_dict()
+                for record in self.records
+            ],
+        }
