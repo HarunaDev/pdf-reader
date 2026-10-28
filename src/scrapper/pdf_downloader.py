@@ -44,7 +44,7 @@ def validate_pdf(file_path: Path) -> tuple[bool, str | None]:
 
         return True, None
 
-    except (OSError, ValueError, Exception) as exc:
+    except Exception as exc:
         return False, f"PDF validation failed: {exc}"
 
 
