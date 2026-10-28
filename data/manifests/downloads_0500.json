@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521351-june-2024-question-paper-21.pdf",
+    "local_path": "/Users/uss-enterprise/Desktop/Projects/pdf-scanner/data/pdfs/0500/2024/june/paper-21/question_paper-544bff24bc39.pdf",
+    "status": "downloaded",
+    "attempts": 1,
+    "file_size": 723140,
+    "error": null
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521329-june-2024-mark-scheme-paper-21.pdf",
+    "local_path": "/Users/uss-enterprise/Desktop/Projects/pdf-scanner/data/pdfs/0500/2024/june/paper-21/mark_scheme-0b381c3b3f32.pdf",
+    "status": "downloaded",
+    "attempts": 1,
+    "file_size": 148798,
+    "error": null
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521345-june-2024-insert-paper-21.pdf",
+    "local_path": "/Users/uss-enterprise/Desktop/Projects/pdf-scanner/data/pdfs/0500/2024/june/paper-21/reading_passage-48a856e6ff18.pdf",
+    "status": "downloaded",
+    "attempts": 1,
+    "file_size": 699840,
+    "error": null
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521350-june-2024-question-paper-11.pdf",
+    "local_path": "/Users/uss-enterprise/Desktop/Projects/pdf-scanner/data/pdfs/0500/2024/june/paper-11/question_paper-c60ec46d3860.pdf",
+    "status": "downloaded",
+    "attempts": 1,
+    "file_size": 773019,
+    "error": null
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521328-june-2024-mark-scheme-paper-11.pdf",
+    "local_path": "/Users/uss-enterprise/Desktop/Projects/pdf-scanner/data/pdfs/0500/2024/june/paper-11/mark_scheme-a465567342a4.pdf",
+    "status": "downloaded",
+    "attempts": 1,
+    "file_size": 226933,
+    "error": null
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521344-june-2024-insert-paper-11.pdf",
+    "local_path": "/Users/uss-enterprise/Desktop/Projects/pdf-scanner/data/pdfs/0500/2024/june/paper-11/reading_passage-25664336b43b.pdf",
+    "status": "downloaded",
+    "attempts": 1,
+    "file_size": 729122,
+    "error": null
+  }
+]
